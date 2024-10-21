@@ -20,7 +20,7 @@ Complete SQL With Notes.
  14. Window Function – Types & Syntax
  15. Case Statement/Expression with examples
  16. CTE- Common Table Expression with examples.
- 
+ 17. Single Row Function.
 ===================================================================================================
 
 Introduction to SQL
