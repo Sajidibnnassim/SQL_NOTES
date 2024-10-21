@@ -806,3 +806,71 @@ CTE. Here, the main query (also known as the outer query) is SELECT a,c FROM my_
 	 ORDER BY payment.mode;
 	 
 =====================================================================================================================
+
+--Single Row Function
+
+CREATE TABLE public.dual ( dummy varchar);
+
+insert into dual values ('X');
+
+select substr('Welcome to India',1,7) from dual;
+
+--INSTR will return Position of String
+--select INSTR('CORPORATE FLOOR','R') from dual;
+
+--LPAD
+select LPAD('WELCOME',30,'*') from dual;
+
+--RPAD
+select RPAD('WELCOME',50,'*') from dual;
+
+select LPAD(RPAD('WELCOME',15,'*'),30,'*') from dual;
+
+--LTRIM
+select LTRIM ('	 Welcome')from dual;
+
+--RTRIM
+select LTRIM ('Welcome   ')from dual;
+
+--TRIM
+select TRIM ('   Welcome   ')from dual;
+
+
+--REPLACE
+select REPLACE ('JACK AND JUE','J','BL') from dual;
+
+--TRANSLATE
+select Translate('WELCOME TO CHENNAI','ABCDEF','WXYZ') from dual;
+
+--NVL(ORACLE) or COALESCE(POSTGRES)
+select COALESCE(5,6) from dual;
+
+select COALESCE(null,6) from dual;
+
+--ROUND
+select round(0.7) from dual;
+
+select round(2.7) from dual;
+
+
+--trunc <The TRUNC function is used to truncate, or remove, the fractional part of a number or date and time value>
+select trunc(0.7878) from dual;
+
+select trunc(5435.7878) from dual;
+
+select trunc(5435.3878) from dual;
+
+select trunc(5435.7878,2) from dual;
+
+
+--floor and ciel
+select floor(5.9999999) from dual;
+
+select floor(5.9999999888999) from dual;
+
+select ceil(5.9999999) from dual;
+
+select ceil(5.4789999) from dual;
+
+--date
+select TO_DATE('2001/01/01','yyyy/mm/dd')-TO_DATE('2000/01/01','yyyy/mm/dd') from dual;
