@@ -58,18 +58,6 @@ Transactions
 9. What is the difference between explicit and implicit transactions?
 10. How do transactions work in a distributed database environment?
 
-Stored Procedures and Functions
-1. What is a stored procedure in SQL?
-2. How do stored procedures differ from functions?
-3. How do you create a stored procedure in SQL?
-4. What are the advantages of using stored procedures?
-5. How do you pass parameters to a stored procedure?
-6. Explain the difference between input and output parameters in stored procedures.
-7. How do you handle exceptions in a stored procedure?
-8. Can you call a stored procedure within another stored procedure?
-9. How do you create and use a user-defined function in SQL?
-10. What are the limitations of stored procedures?
-
 Normalization and Database Design
 1. What is normalization in database design?
 2. Explain the different normal forms with examples.
