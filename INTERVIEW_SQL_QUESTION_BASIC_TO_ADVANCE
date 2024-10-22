@@ -29,7 +29,6 @@ Subqueries
 4. How can you return multiple values from a subquery?
 5. Explain the use of subqueries in the SELECT clause.
 6. What are scalar subqueries and how are they used?
-
 7. How do you perform a DELETE operation using a subquery?
 8. What are the limitations of subqueries?
 9. Can subqueries be used with JOIN? How?
@@ -65,7 +64,6 @@ Stored Procedures and Functions
 3. How do you create a stored procedure in SQL?
 4. What are the advantages of using stored procedures?
 5. How do you pass parameters to a stored procedure?
-
 6. Explain the difference between input and output parameters in stored procedures.
 7. How do you handle exceptions in a stored procedure?
 8. Can you call a stored procedure within another stored procedure?
