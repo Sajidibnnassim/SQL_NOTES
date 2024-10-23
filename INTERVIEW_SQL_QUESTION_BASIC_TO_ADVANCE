@@ -216,8 +216,152 @@ NOTE: This replaces NULL salaries with 0 for employees without recorded salaries
 
 --------------------------------------------------------------------------------------------------------------------
 Subqueries:
+
+1.
+A subquery is a query nested inside another SQL query. It can reside within SELECT, FROM, WHERE, HAVING, or other clauses.
+SELECT name 
+FROM employees 
+WHERE department_id = (SELECT id FROM departments WHERE name = 'HR');
+
+2.
+A subquery in the WHERE clause returns values used to filter results of the outer query. The operator with the subquery can be =, IN, NOT IN, or EXISTS.
+SELECT name 
+FROM employees 
+WHERE department_id IN (SELECT id FROM departments WHERE location = 'New York');
+
+3.
+-Non-correlated Subquery: The inner query executes independently of the outer query.
+SELECT name 
+FROM employees 
+WHERE salary > (SELECT AVG(salary) FROM employees);
+
+-Correlated Subquery: The inner query depends on each row of the outer query and executes once for each row.
+SELECT e.name 
+FROM employees e 
+WHERE e.salary > (SELECT AVG(salary) FROM employees WHERE department_id = e.department_id);
+
+3.
+You can return multiple values (rows) with subqueries in combination with IN or EXISTS.
+SELECT name 
+FROM employees 
+WHERE department_id IN (SELECT id FROM departments WHERE location = 'Chicago');
+
+4.
+Subqueries in the SELECT clause compute a derived value for each row.
+SELECT name, (SELECT AVG(salary) FROM employees) AS average_salary
+FROM employees;
+
+5.
+A scalar subquery returns a single value and can be used where a value or expression is expected.
+SELECT name, (SELECT MAX(salary) FROM employees) AS max_salary
+FROM employees;
+
+6.
+A scalar subquery returns a single value and can be used where a value or expression is expected.
+SELECT name, (SELECT MAX(salary) FROM employees) AS max_salary
+FROM employees;
+
+7.
+You can use a subquery in a DELETE statement to identify which rows to delete.
+DELETE FROM employees 
+WHERE department_id = (SELECT id FROM departments WHERE name = 'HR');
+
+8.
+Performance Issues: Subqueries can be slower than joins, especially for correlated subqueries.
+Limited Returns: Some subqueries can only return scalar or a certain number of rows.
+Syntax Constraints: In some databases, not all subqueries are allowed in every clause.
+
+9.
+Subqueries can complement JOIN operations by filtering data or generating aggregated results used in the join condition.
+SELECT e.name, d.name 
+FROM employees e 
+JOIN (SELECT id, name FROM departments WHERE location = 'NY') d 
+ON e.department_id = d.id;
+
+10.
+Performance Concerns: Subqueries, especially correlated ones, can slow down queries due to multiple executions.
+Optimization: In some cases, using JOIN instead of subqueries improves performance.
+Indexes: Proper indexing on columns used in subqueries can help mitigate performance issues.
+
 --------------------------------------------------------------------------------------------------------------------
 Indexes:
+
+1.
+An index in SQL is a data structure that improves the speed of data retrieval on a database table.
+It functions similarly to an index in a book, making searches more efficient by creating a "shortcut" to the desired rows in the table.
+
+2.
+Indexes improve query performance by:
+Reducing the amount of data the database needs to scan.
+Allowing the database engine to quickly locate the rows matching a query's criteria, rather than scanning the entire table (called full table scan).
+Sorting data in advance, which speeds up ORDER BY and GROUP BY operations.
+
+3.
+Clustered Index:
+Sorts and stores the actual data rows of the table based on the indexed column(s).
+A table can have only one clustered index because the data itself is arranged physically in that order.
+Example: A clustered index on id will store the rows in ascending order of id.
+
+Non-Clustered Index:
+Stores a separate structure with pointers to the original data rows in the table.
+A table can have multiple non-clustered indexes.
+Example: A non-clustered index on a column like email stores the indexed keys and references to the data locations.
+
+4.
+-Syntax for a simple index:
+CREATE INDEX idx_column_name ON table_name (column_name);
+
+-Example: Create an index on the 'last_name' column of the 'employees' table:
+CREATE INDEX idx_last_name ON employees (last_name);
+
+-Syntax for a unique index:
+CREATE UNIQUE INDEX idx_email_unique ON employees (email);
+
+5.
+Advantages:
+Faster queries: Significantly improves SELECT query performance.
+Better sorting: Speeds up ORDER BY and GROUP BY operations.
+Quick lookups: Optimizes searches with conditions like WHERE.
+
+Disadvantages:
+Storage cost: Indexes take up additional space.
+Slower DML operations: INSERT, UPDATE, and DELETE operations become slower due to index maintenance.
+Over-indexing: Too many indexes can degrade performance.
+
+6.
+Use EXPLAIN or EXPLAIN ANALYZE to analyze a query’s execution plan.
+EXPLAIN SELECT * FROM employees WHERE last_name = 'Smith';
+
+NOTE:The output will indicate if the query is using an index scan.
+
+7.
+A composite index is an index on multiple columns.
+CREATE INDEX idx_name_age ON employees (last_name, age);
+
+Composite indexes are useful when queries frequently use multiple columns in the WHERE clause.
+Leftmost prefix rule: For the above index, queries on last_name or on both last_name and age will benefit, but not on age alone.
+
+8.
+INSERT: Slower because the index must be updated with new data.
+UPDATE: If indexed columns are modified, the index must be rebuilt, making the operation slower.
+DELETE: Requires the index to delete references, adding overhead.
+
+9.
+On small tables: A full table scan might be faster.
+On frequently updated tables: Index maintenance overhead can degrade performance.
+On columns with high data uniqueness: Indexing a column with almost unique values (like ID) may have little benefit.
+On columns with a lot of NULLs or identical values.
+
+10.
+-Syntax to drop an index:
+DROP INDEX idx_column_name;
+
+-Example: Remove the index on the 'last_name' column:
+DROP INDEX idx_last_name;
+
+NOTE: For some databases (like MySQL), the syntax may vary slightly:
+ALTER TABLE employees DROP INDEX idx_last_name;
+
 --------------------------------------------------------------------------------------------------------------------
 Transactions:
 --------------------------------------------------------------------------------------------------------------------
