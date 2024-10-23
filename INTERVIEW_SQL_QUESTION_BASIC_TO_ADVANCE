@@ -72,7 +72,7 @@ Normalization and Database Design:
 
 
 
-=================================================================================
+==================================================================================================================================================================
 
 Basic SQL Queries:
 1.
@@ -131,7 +131,7 @@ Use the UPDATE statement with a WHERE clause to target specific rows:
   UPDATE employees 
   SET salary = 60000 
   WHERE employee_id = 101;
---------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Joins:
 
 1.
@@ -214,7 +214,7 @@ LEFT JOIN Salaries B ON A.id = B.emp_id;
 
 NOTE: This replaces NULL salaries with 0 for employees without recorded salaries.
 
---------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Subqueries:
 
 1.
@@ -283,7 +283,7 @@ Performance Concerns: Subqueries, especially correlated ones, can slow down quer
 Optimization: In some cases, using JOIN instead of subqueries improves performance.
 Indexes: Proper indexing on columns used in subqueries can help mitigate performance issues.
 
---------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Indexes:
 
 1.
@@ -362,8 +362,196 @@ DROP INDEX idx_last_name;
 NOTE: For some databases (like MySQL), the syntax may vary slightly:
 ALTER TABLE employees DROP INDEX idx_last_name;
 
---------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Transactions:
---------------------------------------------------------------------------------------------------------------------
+
+1.
+A transaction is a logical unit of work that consists of one or more SQL statements, executed as a single operation.
+Transactions ensure that either all operations within the block succeed or none are applied, maintaining data consistency.
+
+2.
+Atomicity: The entire transaction is treated as a single unit; it either completes fully or not at all.
+Consistency: Transactions move the database from one consistent state to another, maintaining all rules and constraints.
+Isolation: Changes made in a transaction are not visible to other transactions until the transaction is completed.
+Durability: Once a transaction is committed, its changes are permanent, even in the event of a system failure.
+
+3.
+Start a Transaction: Most SQL databases automatically start a transaction or use the BEGIN TRANSACTION or START TRANSACTION commands.
+End a Transaction:
+Commit: Use COMMIT to permanently save the changes.
+Rollback: Use ROLLBACK to undo the changes made within the transaction.
+
+4.
+COMMIT: Saves all changes made during the transaction to the database, making them permanent.
+ROLLBACK: Undoes all changes made during the transaction, restoring the database to its previous state before the transaction started.
+
+5.
+Use ACID-compliant databases.
+Define appropriate constraints (like primary keys and foreign keys).
+Use transactions to bundle related SQL operations together.
+Apply isolation levels to control how transactions interact with each other.
+
+6.
+Isolation levels define the degree to which one transaction is isolated from other concurrent transactions. Common isolation levels include:
+
+Read Uncommitted: Transactions can see uncommitted changes from others (can lead to dirty reads).
+Read Committed: Transactions can only read committed changes (prevents dirty reads).
+Repeatable Read: Ensures that if a row is read twice during a transaction, its value won’t change.
+Serializable: The strictest level, transactions execute as if they were sequential.
+
+7.
+A deadlock occurs when two or more transactions are waiting for each other to release locks, causing a cycle of dependencies.
+Prevention Strategies:
+
+Use timeout mechanisms to detect and resolve deadlocks.
+Lock resources in a consistent order across transactions.
+Use smaller transactions to minimize locking time.
+Apply optimistic locking where feasible.
+
+8.
+A savepoint allows you to roll back part of a transaction without affecting the entire transaction.
+
+SAVEPOINT savepoint_name;
+-Execute some SQL operations
+ROLLBACK TO savepoint_name;  -- Undo to the savepoint.
+
+9.
+Explicit Transaction: You manually control the start and end using BEGIN, COMMIT, and ROLLBACK.
+Implicit Transaction: The database automatically wraps each SQL statement in a transaction (common for databases with autocommit enabled).
+
+10.
+In distributed transactions, operations span across multiple databases or servers. A two-phase commit (2PC) protocol is often used:
+
+Phase 1 (Prepare): All participants agree to commit or rollback the transaction.
+Phase 2 (Commit/Rollback): If all participants vote to commit, the coordinator sends a commit command; otherwise, a rollback is issued.
+Distributed transactions ensure consistency across systems, but they can be more complex and may introduce performance overhead.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Normalization and Database Design:
---------------------------------------------------------------------------------------------------------------------
+
+1.
+Normalization is the process of organizing data to minimize redundancy and improve data integrity. It involves breaking down tables into smaller related tables and linking them using relationships.
+The goal is to eliminate duplicate data, ensure logical data grouping, and make it easier to maintain.
+
+
+
+2.
+A. First Normal Form (1NF)
+
+Requirement: Each column must contain atomic values (indivisible) and each row must be unique.
+Example:
+Student_ID	  Name  	 Courses
+    1	        Alice	    Math
+                       Science
+Problem: Courses should not be a list but rather stored in separate rows.
+
+Solution (1NF):
+Student_ID	Name	Course
+  1	       Alice	 Math
+  1	       Alice	Science
+
+---------------------------
+B. Second Normal Form (2NF)
+
+Requirement: Be in 1NF and all non-key attributes should depend entirely on the primary key (no partial dependency).
+
+Example:
+A table storing course enrollments might have:
+| Enrollment_ID | Student_ID | Student_Name | Course_ID |
+Here, Student_Name depends only on Student_ID (partial dependency), not the full primary key.
+
+Solution (2NF): Split into two tables:
+Students: (Student_ID, Student_Name)
+Enrollments: (Enrollment_ID, Student_ID, Course_ID)
+
+---------------------------
+C. Third Normal Form (3NF)
+
+Requirement: Be in 2NF and have no transitive dependencies (non-key attributes shouldn’t depend on other non-key attributes).
+Example:
+If a table has:
+| Employee_ID | Employee_Name | Department | Department_Head |
+The Department_Head depends on Department, not the primary key.
+Solution (3NF):
+Departments: (Department, Department_Head)
+Employees: (Employee_ID, Employee_Name, Department);
+
+--------------------------------
+D. Boyce-Codd Normal Form (BCNF)
+
+A stricter version of 3NF. In BCNF, every determinant 
+(attribute on the left side of a dependency) must be a candidate key.
+
+
+
+3.
+Denormalization involves combining normalized tables to improve query performance at the cost of redundancy. It is typically used in:
+
+Read-heavy systems: Where reducing joins improves performance.
+Data warehouses: To speed up reporting and analytics.
+Caching: When faster access is more critical than storage efficiency.
+
+
+4.
+A many-to-many relationship requires a junction table to link two entities.
+Example:
+Students table: (Student_ID, Name)
+Courses table: (Course_ID, Title)
+Junction table: Enrollments (Student_ID, Course_ID);
+This table ensures each student can enroll in multiple courses, and each course can have multiple students.
+
+
+5.
+A primary key is a unique identifier for each record in a table. It ensures:
+Uniqueness of data
+Referential integrity between tables
+Efficient indexing for faster searches.
+
+6.
+Foreign Key
+A foreign key is a field (or a combination of fields) in one table that refers to the primary key in another table.
+It establishes a relationship between the two tables and ensures that the value in the foreign key column corresponds to a valid record in the related (parent) table.
+
+Referential Integrity
+Referential integrity ensures that relationships between tables remain consistent. Specifically:
+
+Every foreign key value must match an existing primary key value in the parent table, or it must be null (if allowed).
+Prevents orphaned records – a child record (e.g., an order) cannot exist without a valid parent record (e.g., a customer).
+Example of Violating Referential Integrity:
+If an order with Customer_ID = 3 is added, but no customer with Customer_ID = 3 exists, the data is inconsistent.
+
+
+7.
+Steps to design a schema:
+
+-Gather requirements: Understand the data model, users, and queries.
+-Identify entities and relationships: Define core entities and how they relate.
+-Design ERD (Entity-Relationship Diagram): Visualize tables and relationships.
+-Define keys and constraints: Assign primary and foreign keys.
+-Normalize the schema: Ensure data consistency by eliminating redundancy.
+-Optimize for performance: Identify indexes, partitions, or denormalization as needed.
+-Test with sample data: Validate the schema and queries.
+
+8.
+Over-normalization: Too many joins can degrade performance.
+Lack of indexing: Slows down query execution.
+Ignoring scalability: Failing to plan for data growth.
+Inconsistent naming conventions: Leads to confusion and harder maintenance.
+Poor handling of null values: Can cause unexpected results in queries.
+
+9.
+Partitioning: Divide large tables into smaller, more manageable pieces.
+Sharding: Distribute data across multiple servers.
+Indexes: Optimize read performance.
+Caching: Store frequently accessed data in-memory.
+Replication: Use replicas for load balancing and redundancy.
+NoSQL solutions: Consider non-relational databases for massive-scale systems.
+
+10.
+Indexes improve the performance of read operations by allowing the database to locate data quickly without scanning the entire table.
+
+Clustered index: Determines the physical order of data (only one per table).
+Non-clustered index: Points to data stored elsewhere.
+Trade-offs: While indexes speed up reads, they can slow down writes (inserts/updates).
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
