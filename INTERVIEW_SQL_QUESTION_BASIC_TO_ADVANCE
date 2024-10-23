@@ -1,16 +1,16 @@
 Basic SQL Queries:
-2. How do you retrieve all records from a table?
-3. How can you fetch only distinct values in SQL?
-4. What is the difference between WHERE and HAVING clauses?
-5. How do you sort the results of a query in ascending or descending order?
-6. Explain the LIMIT clause and its use.
-7. How can you count the number of records in a table?
-8. What is the purpose of the GROUP BY clause?
-9. How do you filter data using multiple conditions?
-10. What is the IN operator and how is it used?
-11. How do you update a specific record in a table?
+1. How do you retrieve all records from a table?
+2. How can you fetch only distinct values in SQL?
+3. What is the difference between WHERE and HAVING clauses?
+4. How do you sort the results of a query in ascending or descending order?
+5. Explain the LIMIT clause and its use.
+6. How can you count the number of records in a table?
+7. What is the purpose of the GROUP BY clause?
+8. How do you filter data using multiple conditions?
+9. What is the IN operator and how is it used?
+10. How do you update a specific record in a table?
 
-Joins
+Joins:
 1. What are the different types of joins in SQL?
 2. Explain the difference between INNER JOIN and OUTER JOIN.
 3. How does a LEFT JOIN work?
@@ -22,7 +22,7 @@ Joins
 9. What is the importance of the ON clause in a JOIN?
 10. How do you handle null values when performing joins?
 
-Subqueries
+Subqueries:
 1. What is a subquery in SQL?
 2. How do you use a subquery in a WHERE clause?
 3. Can you explain the difference between a correlated and a non-correlated subquery?
@@ -34,7 +34,7 @@ Subqueries
 9. Can subqueries be used with JOIN? How?
 10. What is the impact of subqueries on performance?
 
-Indexes
+Indexes:
 1. What is an index in SQL?
 2. How do indexes improve query performance?
 3. Explain the difference between a clustered and a non-clustered index.
@@ -46,7 +46,7 @@ Indexes
 9. When should you avoid using indexes?
 10. How do you remove an index from a table?
 
-Transactions
+Transactions:
 1. What is a transaction in SQL?
 2. Explain the ACID properties of a transaction.
 3. How do you start and end a transaction?
@@ -58,7 +58,7 @@ Transactions
 9. What is the difference between explicit and implicit transactions?
 10. How do transactions work in a distributed database environment?
 
-Normalization and Database Design
+Normalization and Database Design:
 1. What is normalization in database design?
 2. Explain the different normal forms with examples.
 3. What is denormalization and when is it used?
@@ -69,3 +69,157 @@ Normalization and Database Design
 8. What are the common pitfalls in database design?
 9. How do you ensure scalability in a database design?
 10. What is the importance of indexing in database design?
+
+
+
+=================================================================================
+
+Basic SQL Queries:
+1.
+Use the SELECT statement without any condition:
+  SELECT * FROM table_name;
+
+2.
+Use the DISTINCT keyword to remove duplicates:
+  SELECT DISTINCT column_name FROM table_name;
+
+3.
+WHERE: Filters rows before grouping; used with individual rows.
+  HAVING: Filters groups after aggregation; used with GROUP BY.
+ 
+ -Using WHERE to filter individual rows
+  SELECT * FROM employees WHERE department = 'Sales';
+ -Using HAVING to filter aggregated groups
+  SELECT department, COUNT(*) FROM employees
+  GROUP BY department
+  HAVING COUNT(*) > 10;
+
+4.
+Use the ORDER BY clause:
+-Ascending order (default)
+ SELECT * FROM employees ORDER BY salary;
+
+-Descending order
+ SELECT * FROM employees ORDER BY salary DESC;
+
+5.
+The LIMIT clause restricts the number of rows returned:
+  SELECT * FROM employees LIMIT 5;
+
+6.
+Use the COUNT function:
+ SELECT COUNT(*) FROM employees;
+
+7.
+The GROUP BY clause groups rows with the same values in specified columns, often used with aggregate functions:
+  SELECT department, COUNT(*) FROM employees
+  GROUP BY department;
+
+8.
+Use AND or OR to combine multiple conditions in the WHERE clause:
+-Using AND
+SELECT * FROM employees WHERE department = 'Sales' AND salary > 50000;
+-Using OR
+ SELECT * FROM employees WHERE department = 'Sales' OR department = 'Marketing';
+
+9.
+The IN operator checks if a value matches any value in a list:
+  SELECT * FROM employees WHERE department IN ('Sales', 'Marketing', 'HR');
+
+10.
+Use the UPDATE statement with a WHERE clause to target specific rows:
+  UPDATE employees 
+  SET salary = 60000 
+  WHERE employee_id = 101;
+--------------------------------------------------------------------------------------------------------------------
+Joins:
+
+1.
+The main types of joins in SQL are:
+INNER JOIN: Returns only the matching rows between tables.
+OUTER JOIN:
+LEFT JOIN: All rows from the left table + matching rows from the right.
+RIGHT JOIN: All rows from the right table + matching rows from the left.
+FULL JOIN: Returns all rows when there is a match in one of the tables, including non-matching rows from both.
+CROSS JOIN: Returns the Cartesian product of the two tables.
+SELF JOIN: Joins a table to itself.
+
+2.
+INNER JOIN returns only rows with matching values in both tables.
+Example: SELECT * FROM A INNER JOIN B ON A.id = B.id;
+OUTER JOIN includes rows even if there are no matches.
+LEFT JOIN: Includes all rows from the left table.
+RIGHT JOIN: Includes all rows from the right table.
+FULL JOIN: Includes all rows from both tables, with NULL for non-matching rows.
+
+3.
+A LEFT JOIN returns all rows from the left table and the matching rows from the right table. If there is no match, the result will contain NULL in columns from the right table.
+SELECT A.id, A.name, B.salary 
+FROM Employees A 
+LEFT JOIN Salaries B ON A.id = B.emp_id;
+NOTE: If some employees don’t have a salary recorded, their salary value will appear as NULL.
+
+4.
+A CROSS JOIN produces the Cartesian product of two tables, meaning each row from the first table is combined with every row from the second.
+Use case: When you need all possible combinations of two datasets.
+SELECT * FROM A CROSS JOIN B;
+NOTE: For example, combining product and store tables to analyze every product in each store.
+
+5.
+A SELF JOIN is when a table is joined with itself, usually with aliases to differentiate between the two references.
+SELECT A.employee_id, A.name, B.name AS manager_name
+FROM Employees A 
+JOIN Employees B ON A.manager_id = B.employee_id;
+This retrieves each employee and their respective manager’s name from the same table.
+
+6.
+UNION combines the result sets of two queries, removing duplicates.
+UNION ALL combines the result sets without removing duplicates (faster).
+SELECT name FROM Employees 
+UNION ALL 
+SELECT name FROM Customers;
+
+7.
+To retrieve both matching and non-matching records, you can use:
+LEFT JOIN for non-matching rows from the left table.
+RIGHT JOIN for non-matching rows from the right table.
+FULL JOIN for non-matching rows from both tables.
+
+SELECT A.id, A.name, B.salary 
+FROM Employees A 
+FULL OUTER JOIN Salaries B ON A.id = B.emp_id;
+
+This will return all employees and salaries, including those without matches.
+
+8.
+To join more than two tables, you chain multiple joins together, using the ON clause to specify matching conditions.
+
+SELECT A.name, B.salary, C.department 
+FROM Employees A 
+JOIN Salaries B ON A.id = B.emp_id 
+JOIN Departments C ON A.dept_id = C.id;
+
+9.
+The ON clause specifies the condition on which the tables should be joined. It determines how rows from two tables are matched.
+Without the ON clause, CROSS JOIN behavior occurs (i.e., a Cartesian product).
+
+10.
+To handle NULL values:
+Use COALESCE() to replace NULLs with a default value.
+Use IS NULL or IS NOT NULL to filter rows containing NULLs.
+
+SELECT A.id, COALESCE(B.salary, 0) AS salary 
+FROM Employees A 
+LEFT JOIN Salaries B ON A.id = B.emp_id;
+
+NOTE: This replaces NULL salaries with 0 for employees without recorded salaries.
+
+--------------------------------------------------------------------------------------------------------------------
+Subqueries:
+--------------------------------------------------------------------------------------------------------------------
+Indexes:
+--------------------------------------------------------------------------------------------------------------------
+Transactions:
+--------------------------------------------------------------------------------------------------------------------
+Normalization and Database Design:
+--------------------------------------------------------------------------------------------------------------------
